@@ -96,28 +96,29 @@ contract TomCoin is ERC20, SafeMath {
 		require(withdrawals[_participant].tokens == 0);
 		balances[_participant] = safeSub(balances[_participant], _tokensToWithdraw);
 		withdrawals[_participant] = Withdrawal({tokens: _tokensToWithdraw, time: now});
+    withdraw(_participant);
 	}
 
 	Price public currentPrice;
 
-  function checkEthValue(uint256 amountTokensToWithdraw) constant returns (uint256 ethervalue) {
+  function checkEthValue(uint256 amountTokensToWithdraw) returns (uint256 ethervalue) {
 		currentPrice.numerator = 2;
 		currentPrice.denominator = 1;
-    require(amountTokensToWithdraw > 0 );
-    require(balanceOf(msg.sender) >= amountTokensToWithdraw);
-    uint256 withdrawValue = safeMul(amountTokensToWithdraw, currentPrice.denominator) / currentPrice.numerator;
-    require(manager.balance >= withdrawValue);
-    return withdrawValue;
+    //require(amountTokensToWithdraw > 0 );
+    //require(balanceOf(msg.sender) >= amountTokensToWithdraw);
+    uint256 etherValue = safeMul(amountTokensToWithdraw, currentPrice.denominator) / currentPrice.numerator;
+    //require(manager.balance >= withdrawValue);
+    return uint256(50);
   }
 
-  function withdraw() external{
-    address participant = msg.sender;
+  function withdraw(address participant) {
+    //address participant = msg.sender;
     uint256 tokens = withdrawals[participant].tokens;
-		require(tokens > 0);
+		//require(tokens > 0);
 		uint256 requestTime = withdrawals[participant].time;
 		//Price price = prices[requestTime];
-		require(currentPrice.numerator > 0);
 		uint256 ethValue = checkEthValue(tokens);
+    //require(currentPrice.numerator > 0);
 		withdrawals[participant].tokens = 0;
 		if (manager.balance >= ethValue){
 			withdraw_from_balance(participant, ethValue, tokens);
@@ -129,7 +130,7 @@ contract TomCoin is ERC20, SafeMath {
 
 	function withdraw_from_balance(address _participant, uint256 _ethValue, uint256 _tokens) private{
 		balances[manager] = safeAdd(balances[manager], _tokens);
-		_participant.transfer(_ethValue);
+		//_participant.transfer(_ethValue);
 
 	}
 

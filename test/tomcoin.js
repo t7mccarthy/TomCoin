@@ -60,4 +60,63 @@ contract('TomCoin', function(accounts) {
       assert.equal(account_two_ending_balance, account_two_starting_balance + amount, "Amount wasn't correctly sent to the receiver");
     });
   });
+
+  it("should withdraw coin correctly", function() {
+    var tom;
+
+    // Get initial balances of first and second account.
+    var account_one = accounts[0];
+    var manager = accounts[1];
+    var account_two = accounts[2];
+
+    var account_one_starting_balance;
+    var account_two_starting_balance;
+    var manager_starting_balance;
+    var account_one_ending_balance;
+    var account_two_ending_balance;
+    var manager_ending_balance;
+
+    var amount = 10;
+
+    return TomCoin.deployed().then(function(instance) {
+      tom = instance;
+      return tom.balanceOf.call(account_one);
+    }).then(function(balance) {
+      account_one_starting_balance = balance.toNumber();
+      return tom.balanceOf.call(manager);
+    }).then(function(balance) {
+      manager_starting_balance = balance.toNumber();
+      return tom.requestWithdrawal(account_one, amount);
+    // }).then(function() {
+    //   //manager_starting_balance = balance.toNumber();
+    //   return tom.withdraw(account_one);
+    }).then(function() {
+      return tom.balanceOf.call(account_one);
+    }).then(function(balance) {
+      account_one_ending_balance = balance.toNumber();
+      return tom.balanceOf.call(manager);
+    }).then(function(balance) {
+      manager_ending_balance = balance.toNumber();
+
+      assert.equal(account_one_ending_balance, account_one_starting_balance - amount, "Amount wasn't correctly taken from the sender");
+      assert.equal(manager_ending_balance, manager_starting_balance + amount, "Amount wasn't correctly sent to the manager");
+    });
+  });
+
+  it("should check eth value correctly", function() {
+    var tom;
+
+    var amount_eth = 1;
+
+    var exp = 5;
+
+    var amount = 10;
+
+    return TomCoin.deployed().then(function(instance) {
+      tom = instance;
+      amount_eth = tom.checkEthValue(amount);
+
+      assert.equal(amount_eth, exp, "Amount wasn't correctly converted to eth");
+    });
+  });
 });
