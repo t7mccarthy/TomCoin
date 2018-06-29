@@ -11,7 +11,7 @@ contract TestTomcoin {
 
     uint expected = 10000;
 
-    Assert.equal(tom.getBalance(tx.origin), expected, "Owner should have 10000 TomCoin initially");
+    Assert.equal(tom.balanceOf(tx.origin), expected, "Owner should have 10000 TomCoin initially");
   }
 
   function testInitialBalanceWithNewTomCoin() public {
@@ -19,7 +19,7 @@ contract TestTomcoin {
 
     uint expected = 10000;
 
-    Assert.equal(tom.getBalance(tx.origin), expected, "Owner should have 10000 TomCoin initially");
+    Assert.equal(tom.balanceOf(tx.origin), expected, "Owner should have 10000 TomCoin initially");
   }
 
 }

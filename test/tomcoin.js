@@ -3,7 +3,7 @@ var TomCoin = artifacts.require("./TomCoin.sol");
 contract('TomCoin', function(accounts) {
   it("should put 10000 TomCoin in the first account", function() {
     return TomCoin.deployed().then(function(instance) {
-      return instance.getBalance.call(accounts[0]);
+      return instance.balanceOf.call(accounts[0]);
     }).then(function(balance) {
       assert.equal(balance.valueOf(), 10000, "10000 wasn't in the first account");
     });
@@ -15,10 +15,10 @@ contract('TomCoin', function(accounts) {
 
     return TomCoin.deployed().then(function(instance) {
       tom = instance;
-      return tom.getBalance.call(accounts[0]);
+      return tom.balanceOf.call(accounts[0]);
     }).then(function(outCoinBalance) {
       tomCoinBalance = outCoinBalance.toNumber();
-      return tom.getBalanceInEth.call(accounts[0]);
+      return tom.balanceOfInEth.call(accounts[0]);
     }).then(function(outCoinBalanceEth) {
       tomCoinEthBalance = outCoinBalanceEth.toNumber();
     }).then(function() {
@@ -41,18 +41,18 @@ contract('TomCoin', function(accounts) {
 
     return TomCoin.deployed().then(function(instance) {
       tom = instance;
-      return tom.getBalance.call(account_one);
+      return tom.balanceOf.call(account_one);
     }).then(function(balance) {
       account_one_starting_balance = balance.toNumber();
-      return tom.getBalance.call(account_two);
+      return tom.balanceOf.call(account_two);
     }).then(function(balance) {
       account_two_starting_balance = balance.toNumber();
-      return tom.sendCoin(account_two, amount, {from: account_one});
+      return tom.transfer(account_two, amount, {from: account_one});
     }).then(function() {
-      return tom.getBalance.call(account_one);
+      return tom.balanceOf.call(account_one);
     }).then(function(balance) {
       account_one_ending_balance = balance.toNumber();
-      return tom.getBalance.call(account_two);
+      return tom.balanceOf.call(account_two);
     }).then(function(balance) {
       account_two_ending_balance = balance.toNumber();
 
