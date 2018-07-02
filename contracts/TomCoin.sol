@@ -36,6 +36,7 @@ contract ERC20 {
 
     event Transfer(address indexed from, address indexed to, uint tokens);
     //event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
+    address public manager;
 }
 
 contract TomCoin is ERC20, SafeMath {
@@ -101,23 +102,25 @@ contract TomCoin is ERC20, SafeMath {
 
 	Price public currentPrice;
 
-  function checkEthValue(uint256 amountTokensToWithdraw) returns (uint256 ethervalue) {
+  /* function checkEthValue(uint256 amountTokensToWithdraw) returns (uint256 ethervalue) {
 		currentPrice.numerator = 2;
 		currentPrice.denominator = 1;
     //require(amountTokensToWithdraw > 0 );
     //require(balanceOf(msg.sender) >= amountTokensToWithdraw);
-    uint256 etherValue = safeMul(amountTokensToWithdraw, currentPrice.denominator) / currentPrice.numerator;
+    //uint256 etherValue = safeMul(amountTokensToWithdraw, currentPrice.denominator) / currentPrice.numerator;
     //require(manager.balance >= withdrawValue);
-    return uint256(50);
-  }
+    return 0;
+  } */
 
   function withdraw(address participant) {
+    currentPrice.numerator = 2;
+		currentPrice.denominator = 1;
     //address participant = msg.sender;
     uint256 tokens = withdrawals[participant].tokens;
 		//require(tokens > 0);
 		uint256 requestTime = withdrawals[participant].time;
 		//Price price = prices[requestTime];
-		uint256 ethValue = checkEthValue(tokens);
+		uint256 ethValue = safeMul(tokens, currentPrice.denominator)/(currentPrice.numerator);
     //require(currentPrice.numerator > 0);
 		withdrawals[participant].tokens = 0;
 		if (manager.balance >= ethValue){
@@ -130,11 +133,17 @@ contract TomCoin is ERC20, SafeMath {
 
 	function withdraw_from_balance(address _participant, uint256 _ethValue, uint256 _tokens) private{
 		balances[manager] = safeAdd(balances[manager], _tokens);
-		//_participant.transfer(_ethValue);
+		_participant.transfer(_ethValue);
 
 	}
 
 	function withdraw_error(address _participant, uint256 _ethValue, uint256 _tokens) private{
 		balances[_participant] = safeAdd(balances[_participant], _tokens);
 	}
+
+  function transfer_to_contract() payable returns(bool success){
+      return true;
+  }
+
+  function () payable {}
 }

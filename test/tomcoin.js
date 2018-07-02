@@ -77,6 +77,7 @@ contract('TomCoin', function(accounts) {
     var manager_ending_balance;
 
     var amount = 10;
+    var transfer_to = 40;
 
     return TomCoin.deployed().then(function(instance) {
       tom = instance;
@@ -86,6 +87,8 @@ contract('TomCoin', function(accounts) {
       return tom.balanceOf.call(manager);
     }).then(function(balance) {
       manager_starting_balance = balance.toNumber();
+      return tom.transfer_to_contract({ value: 4000, from: account_one });
+    }).then(function() {
       return tom.requestWithdrawal(account_one, amount);
     // }).then(function() {
     //   //manager_starting_balance = balance.toNumber();
@@ -103,20 +106,20 @@ contract('TomCoin', function(accounts) {
     });
   });
 
-  it("should check eth value correctly", function() {
-    var tom;
-
-    var amount_eth = 1;
-
-    var exp = 5;
-
-    var amount = 10;
-
-    return TomCoin.deployed().then(function(instance) {
-      tom = instance;
-      amount_eth = tom.checkEthValue(amount);
-
-      assert.equal(amount_eth, exp, "Amount wasn't correctly converted to eth");
-    });
-  });
+  // it("should check eth value correctly", function() {
+  //   var tom;
+  //
+  //   var amount_eth = 1;
+  //
+  //   var exp = 5;
+  //
+  //   var amount = 10;
+  //
+  //   return TomCoin.deployed().then(function(instance) {
+  //     tom = instance;
+  //     amount_eth = instance.checkEthValue(amount);
+  //
+  //     assert.equal(amount_eth, exp, "Amount wasn't correctly converted to eth");
+  //   });
+  // });
 });
